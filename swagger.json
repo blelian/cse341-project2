@@ -1,0 +1,154 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Tourist API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/countries": {
+      "get": {
+        "summary": "Get all countries",
+        "responses": {
+          "200": {
+            "description": "List of countries"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a country",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Country"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Country created"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/countries/{id}": {
+      "get": {
+        "summary": "Get country by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Country found" },
+          "404": { "description": "Country not found" }
+        }
+      },
+      "put": {
+        "summary": "Update country",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Country" } } }
+        },
+        "responses": {
+          "200": { "description": "Country updated" },
+          "400": { "description": "Invalid input" },
+          "404": { "description": "Country not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete country",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Country deleted" },
+          "404": { "description": "Country not found" }
+        }
+      }
+    },
+    "/destinations": {
+      "get": {
+        "summary": "Get all destinations",
+        "responses": {
+          "200": { "description": "List of destinations" }
+        }
+      },
+      "post": {
+        "summary": "Create a destination",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Destination" } } }
+        },
+        "responses": {
+          "201": { "description": "Destination created" },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/destinations/{id}": {
+      "get": {
+        "summary": "Get destination by ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Destination found" },
+          "404": { "description": "Destination not found" }
+        }
+      },
+      "put": {
+        "summary": "Update destination",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Destination" } } }
+        },
+        "responses": {
+          "200": { "description": "Destination updated" },
+          "400": { "description": "Invalid input" },
+          "404": { "description": "Destination not found" }
+        }
+      },
+      "delete": {
+        "summary": "Delete destination",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Destination deleted" },
+          "404": { "description": "Destination not found" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Country": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "continent": { "type": "string" },
+          "population": { "type": "number" }
+        },
+        "required": ["name", "continent"]
+      },
+      "Destination": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "country": { "type": "string" }
+        },
+        "required": ["name", "country"]
+      }
+    }
+  }
+}
