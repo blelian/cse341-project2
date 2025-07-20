@@ -19,4 +19,22 @@ function countryValidation(req, res, next) {
   next();
 }
 
-module.exports = { countryValidation };
+function destinationValidation(req, res, next) {
+  const { countryId, name, description, attractionType, bestTimeToVisit } = req.body;
+
+  if (
+    !countryId || typeof countryId !== 'string' ||
+    !name || typeof name !== 'string' ||
+    !description || typeof description !== 'string' ||
+    !attractionType || typeof attractionType !== 'string' ||
+    !bestTimeToVisit || typeof bestTimeToVisit !== 'string'
+  ) {
+    return res.status(400).json({
+      message: 'Invalid destination data. Required fields must be strings.'
+    });
+  }
+
+  next();
+}
+
+module.exports = { countryValidation, destinationValidation };
