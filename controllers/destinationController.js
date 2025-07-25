@@ -2,7 +2,7 @@ const Destination = require('../models/destination');
 
 async function getAllDestinations(req, res, next) {
   try {
-    const destinations = await Destination.find().populate('country');
+    const destinations = await Destination.find().populate('country_id');
     res.status(200).json(destinations);
   } catch (error) {
     next(error);
@@ -11,7 +11,7 @@ async function getAllDestinations(req, res, next) {
 
 async function getDestinationById(req, res, next) {
   try {
-    const destination = await Destination.findById(req.params.id).populate('country');
+    const destination = await Destination.findById(req.params.id).populate('country_id');
     if (!destination) {
       return res.status(404).json({ message: 'Destination not found' });
     }

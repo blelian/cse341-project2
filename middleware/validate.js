@@ -1,40 +1,33 @@
-// middleware/validate.js
+const { body, validationResult } = require('express-validator');
 
-function countryValidation(req, res, next) {
-  const { name, population, continent } = req.body;
-
-  if (
-    !name || typeof name !== 'string' ||
-    !continent || typeof continent !== 'string'
-  ) {
-    return res.status(400).json({
-      message: 'Invalid country data. Name and continent are required and must be strings.'
-    });
+// Validation rules for destinations
+const destinationValidation = [
+  body('name').notEmpty().withMessage('Name is required'),
+  body('description').notEmpty().withMessage('Description is required'),
+  body('country_id').notEmpty().withMessage('Country ID is required'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
   }
+];
 
-  if (population !== undefined && typeof population !== 'number') {
-    return res.status(400).json({ message: 'Population must be a number if provided.' });
+// Validation rules for countries
+const countryValidation = [
+  body('name').notEmpty().withMessage('Country name is required'),
+  body('code').notEmpty().withMessage('Country code is required'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
   }
+];
 
-  next();
-}
-
-function destinationValidation(req, res, next) {
-  const { countryId, name, description, attractionType, bestTimeToVisit } = req.body;
-
-  if (
-    !countryId || typeof countryId !== 'string' ||
-    !name || typeof name !== 'string' ||
-    !description || typeof description !== 'string' ||
-    !attractionType || typeof attractionType !== 'string' ||
-    !bestTimeToVisit || typeof bestTimeToVisit !== 'string'
-  ) {
-    return res.status(400).json({
-      message: 'Invalid destination data. Required fields must be strings.'
-    });
-  }
-
-  next();
-}
-
-module.exports = { countryValidation, destinationValidation };
+module.exports = {
+  destinationValidation,
+  countryValidation
+};
