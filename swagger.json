@@ -1,38 +1,33 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Tourist API",
-    "version": "1.0.0"
+    "title": "Travel App API",
+    "version": "1.0.0",
+    "description": "API for a travel app with OAuth2 authentication"
   },
   "paths": {
     "/countries": {
       "get": {
         "summary": "Get all countries",
         "responses": {
-          "200": {
-            "description": "List of countries"
-          }
+          "200": { "description": "List of countries" }
         }
       },
       "post": {
-        "summary": "Create a country",
+        "summary": "Create a country (Protected route - requires login)",
+        "security": [{ "cookieAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Country"
-              }
+              "schema": { "$ref": "#/components/schemas/Country" }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "Country created"
-          },
-          "400": {
-            "description": "Invalid input"
-          }
+          "201": { "description": "Country created" },
+          "400": { "description": "Invalid input" },
+          "401": { "description": "Unauthorized" }
         }
       }
     },
@@ -40,12 +35,7 @@
       "get": {
         "summary": "Get country by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "responses": {
           "200": { "description": "Country found" },
@@ -53,27 +43,35 @@
         }
       },
       "put": {
-        "summary": "Update country",
+        "summary": "Update country (Protected route - requires login)",
+        "security": [{ "cookieAuth": [] }],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Country" } } }
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Country" }
+            }
+          }
         },
         "responses": {
           "200": { "description": "Country updated" },
           "400": { "description": "Invalid input" },
+          "401": { "description": "Unauthorized" },
           "404": { "description": "Country not found" }
         }
       },
       "delete": {
-        "summary": "Delete country",
+        "summary": "Delete country (Protected route - requires login)",
+        "security": [{ "cookieAuth": [] }],
         "parameters": [
           { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "responses": {
           "200": { "description": "Country deleted" },
+          "401": { "description": "Unauthorized" },
           "404": { "description": "Country not found" }
         }
       }
@@ -89,7 +87,11 @@
         "summary": "Create a destination",
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Destination" } } }
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Destination" }
+            }
+          }
         },
         "responses": {
           "201": { "description": "Destination created" },
@@ -100,7 +102,9 @@
     "/destinations/{id}": {
       "get": {
         "summary": "Get destination by ID",
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
         "responses": {
           "200": { "description": "Destination found" },
           "404": { "description": "Destination not found" }
@@ -108,10 +112,16 @@
       },
       "put": {
         "summary": "Update destination",
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
         "requestBody": {
           "required": true,
-          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Destination" } } }
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Destination" }
+            }
+          }
         },
         "responses": {
           "200": { "description": "Destination updated" },
@@ -121,10 +131,23 @@
       },
       "delete": {
         "summary": "Delete destination",
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
         "responses": {
           "200": { "description": "Destination deleted" },
           "404": { "description": "Destination not found" }
+        }
+      }
+    },
+    "/auth/dashboard": {
+      "get": {
+        "summary": "Protected Dashboard Route",
+        "description": "Returns user dashboard if logged in",
+        "security": [{ "cookieAuth": [] }],
+        "responses": {
+          "200": { "description": "User dashboard" },
+          "401": { "description": "Unauthorized" }
         }
       }
     }
@@ -148,6 +171,13 @@
           "country_id": { "type": "string" }
         },
         "required": ["name", "country_id"]
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "connect.sid"
       }
     }
   }

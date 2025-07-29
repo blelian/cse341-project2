@@ -2,20 +2,20 @@ const express = require('express');
 const router = express.Router();
 const countryController = require('../controllers/countryController');
 const validate = require('../middleware/validate');
+const isLoggedIn = require('../middleware/isLoggedIn');  // Authentication middleware
 
-// GET all countries
-router.get('/', countryController.getAllCountries);
+// Public Routes
+router.get('/', countryController.getAllCountries); // Get all countries
+router.get('/:id', countryController.getCountryById); // Get country by ID
 
-// GET country by ID
-router.get('/:id', countryController.getCountryById);
+// Protected Routes — Require Login
+// 🔐 Protected: Create country
+router.post('/', isLoggedIn, validate.countryValidation, countryController.createCountry);
 
-// POST create country with validation
-router.post('/', validate.countryValidation, countryController.createCountry);
+// 🔐 Protected: Update country by ID
+router.put('/:id', isLoggedIn, validate.countryValidation, countryController.updateCountry);
 
-// PUT update country by ID with validation
-router.put('/:id', validate.countryValidation, countryController.updateCountry);
-
-// DELETE country by ID
-router.delete('/:id', countryController.deleteCountry);
+// 🔐 Protected: Delete country by ID
+router.delete('/:id', isLoggedIn, countryController.deleteCountry);
 
 module.exports = router;
